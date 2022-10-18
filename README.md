@@ -323,6 +323,8 @@ Exam 1 will cover the material through **lecture 10** and **pset 4**, including:
 
 The exam is **closed book/notes**. (No calculators or computers either.)
 
+* [Exam 1](exams/exam1.pdf) and [solutions](exams/exam1sol.pdf)
+
 * (Optional) **review session**: Thursday 5/6 4–5pm via Zoom: see [recording](https://mit.zoom.us/rec/share/RVnjARqopGxQtnhnCqP57okdWmccGq2MQac8FSuZVkQnmB_WVUH5MQx6GAvP1Z7R.g-ofGE6IRBUuAD2L?startTime=1665086667000), [handwritten notes](https://www.dropbox.com/s/xnowl6zoe1js1t8/18.06%20Fall%2022%20Exam%20Reviews.pdf?dl=0), and practice problems: [spring 2022 exam 1](https://github.com/mitmath/1806/blob/spring22/exams/exam1.pdf) problems 1 and 3 ([solutions](https://github.com/mitmath/1806/blob/spring22/exams/exam1sol.pdf)), fall 2014 exam 1 (below) problem 4, spring 2008 exam 1 (below) problem 1, [spring 2022 final exam](https://github.com/mitmath/1806/blob/spring22/exams/final.pdf) problems 1 and 5 ([solutions](https://github.com/mitmath/1806/blob/spring22/exams/finalsol.pdf)).
 
 Some practice problems: [spring 2017 exam 1](http://web.mit.edu/18.06/www/Spring17/exam1.pdf) problems 1–4 ([solutions](http://web.mit.edu/18.06/www/Spring17/exam1-sol.pdf)); [fall 2017 exam 1](https://github.com/stevengj/1806/blob/fall17/exams/exam1.pdf) problems 1-4 ([solutions](https://github.com/stevengj/1806/blob/fall17/exams/exam1-sol.pdf)); [fall 2017 exam 2](https://github.com/stevengj/1806/blob/fall17/exams/exam2.pdf) problem 1a,b ([solutions](https://github.com/stevengj/1806/blob/fall17/exams/exam2-sol.pdf));
@@ -334,3 +336,44 @@ Some practice problems: [spring 2017 exam 1](http://web.mit.edu/18.06/www/Spring
 [fall 2009 exam 1](http://web.mit.edu/18.06/www/Fall09/exam1.pdf) problems 1, 2, 3, 4 ([solutions](http://web.mit.edu/18.06/www/Fall09/exam1soln.pdf));
 [spring 2008 exam 1](http://web.mit.edu/18.06/www/Spring08/quiz1-1806-S08.pdf) problems 1, 3, 4
 ([solutions](http://web.mit.edu/18.06/www/Spring08/quiz1-1806-S08-soln.pdf))
+
+## Lecture 13 (Oct 12)
+
+* handwritten notes and lecture video (see links above).
+
+Started talking about **orthogonal projection**: for any subspace S ⊆ V, any vector b ∈ V can be written as a sum of two vectors, one in S and one in S<sup>⟂</sup>.   The former is the orthogonal projection Pb of b onto S, where P is the *projection matrix*, and the latter is b–Pb=(I–P)b (the orthogonal projection of b onto S<sup>⟂</sup>).  Covered:
+
+* Projection matrix P = aaᵀ/aᵀa onto 1d subspaces with a basis vector a.  If a=q (normalized), then P = qqᵀ
+* Projection matrix P = A(AᵀA)⁻¹Aᵀ onto n-dimensional subspaces C(A), where A is m×n with full column rank (rank n), i.e. its columns are a basis.
+* Projection onto C(Q), i.e. a subspace with an orthonormal basis is simply QQᵀ.
+
+**Further reading:** Textbook 4.2; video [lecture 15](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-15-projections-onto-subspaces/).
+
+## Lecture 14 (Oct 14)
+
+* handwritten notes and lecture video (see links above).
+* [pset 5 solutions](psets/pset5sol.ipynb)
+* [pset 6](psets/pset6.ipynb) due Oct 21
+
+More on projections:
+
+* Key properties P²=P, P=Pᵀ, C(P)=C(A), N(P)=C(A)<sup>⟂</sup>=N(Aᵀ).
+* P = I for full-row-rank A, for which C(A) is all of ℝᵐ.
+* Why AᵀA is invertible for full-column-rank A, and why the normal equations AᵀAx̂=Aᵀb are solvable for *any* A: rank(AᵀA) = rank(A), N(AᵀA) = N(A), and C(Aᵀ) = C(AᵀA).
+* Projection I-P onto the orthogonal complement of C(A), i.e onto N(Aᵀ).
+* Equivalence between orthogonal projection and least-squares: minimizing ‖b-Ax‖ is equivalent to minimizing ‖b-y‖ over y∈C(A), and the solution is p=Ax̂=Pb, where AᵀAx̂=Aᵀb.
+
+Introduced the topic of least-square approximation: the projection p=Ax̂ of b onto C(A) is the *closest* vector to b in C(A), and hence is the solution that *minimizes* ‖b-Ax‖ over all possible x.  The vector x̂ is an **approximate solution** to Ax=b that *minimizes* the error ‖b-Ax‖ when no exact solution exists.
+
+**Further reading:** Textbook section 4.3 and video [lecture 16](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-16-projection-matrices-and-least-squares/).
+
+## Lecture 15 (Oct 17)
+
+* handwritten notes and lecture video (see links above).
+* [Least-square fitting examples](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Least-Square%20Fitting.ipynb)
+
+Introduced the topic of least-square fitting of data to curves.  As long as the fitting function is linear in the unknown coefficients x, showed that minimizing the sum of the squares of the errors corresponds to minimizing the norm of the residual ‖b-Ax‖.  Went through several examples (see Julia notebook).
+
+Derived the fact that minimizing ‖b-Ax‖ or ‖b-Ax‖² (least squares) corresponds to orthogonal projection (hence AᵀAx̂=Aᵀb) using either algebra (showing ‖b-Ax‖²≥‖b-Ax̂‖² for any x) or calculus (setting ∇‖b-Ax‖²=0).
+
+**Further reading:** Textbook section 4.3 and video [lecture 16](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-16-projection-matrices-and-least-squares/).   There are many, many books and other materials on [linear least-squares fitting](https://en.wikipedia.org/wiki/Linear_least_squares), from many different perspectives (e.g. numerical linear algebra, statistics, machine learning…) The brief discussion at the end of the notebook on [Runge phenomena](https://en.wikipedia.org/wiki/Runge%27s_phenomenon) and equally spaced vs. [Chebyshev points](https://en.wikipedia.org/wiki/Chebyshev_nodes) in polynomial fitting was an entry point into [approximation theory](https://en.wikipedia.org/wiki/Approximation_theory); if you are interested, the [book by Trefethen](https://people.maths.ox.ac.uk/trefethen/ATAP/) and accompanying [video lectures](https://people.maths.ox.ac.uk/trefethen/atapvideos.html) are a great place to start.
