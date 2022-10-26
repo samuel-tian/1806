@@ -377,3 +377,62 @@ Introduced the topic of least-square fitting of data to curves.  As long as the 
 Derived the fact that minimizing ‖b-Ax‖ or ‖b-Ax‖² (least squares) corresponds to orthogonal projection (hence AᵀAx̂=Aᵀb) using either algebra (showing ‖b-Ax‖²≥‖b-Ax̂‖² for any x) or calculus (setting ∇‖b-Ax‖²=0).
 
 **Further reading:** Textbook section 4.3 and video [lecture 16](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-16-projection-matrices-and-least-squares/).   There are many, many books and other materials on [linear least-squares fitting](https://en.wikipedia.org/wiki/Linear_least_squares), from many different perspectives (e.g. numerical linear algebra, statistics, machine learning…) The brief discussion at the end of the notebook on [Runge phenomena](https://en.wikipedia.org/wiki/Runge%27s_phenomenon) and equally spaced vs. [Chebyshev points](https://en.wikipedia.org/wiki/Chebyshev_nodes) in polynomial fitting was an entry point into [approximation theory](https://en.wikipedia.org/wiki/Approximation_theory); if you are interested, the [book by Trefethen](https://people.maths.ox.ac.uk/trefethen/ATAP/) and accompanying [video lectures](https://people.maths.ox.ac.uk/trefethen/atapvideos.html) are a great place to start.
+
+## Lecture 16 (Oct 19)
+
+* handwritten notes and lecture video (see links above).
+
+**Gram-Schmidt orthogonalization**: given a non-orthonormal basis a₁,a₂,…, we can *convert* it to an orthonormal basis that **spans the same space**.  All we do is to **take each vector and subtract the projections onto the previous vectors** to make them orthogonal, and divide by their lengths to normalize them.
+
+To go directly from a₁,a₂,… to q₁,q₂,…:
+1. q₁ = a₁ / ‖a₁‖
+2. q₂ = (a₂ - q₁q₁ᵀa₂) / ‖⋯‖: subtract the projection q₁q₁ᵀa₂ of a₂ onto q₁ to make them orthogonal.
+3. q₃ = (a₃ - q₁q₁ᵀa₃ - q₂q₂ᵀa₃) / ‖⋯‖: subtract the projections of a₃ onto q₁ and q₂
+4. etcetera
+
+(The process described above and in the book is known as "classical" Gram-Schmidt.  In practice, the computer actually uses more sophisticated algorithms.  But classical Gram-Schmidt is still a good way to *think* about the process.
+
+Writing Gram–Schmidt in matrix form: it turns out that what we are "really" doing is factoring A=QR, where Q is a matrix with orthonormal columns spanning C(A) and R is an invertible upper-triangular matrix.
+
+Using QR to solve the least-squares problem: given A=QR, the normal equations AᵀAx̂=Aᵀb turn into the triangular system of equations Rx̂=Qᵀb.
+
+Talked about the computational complexity/scaling: for an m×n matrix A, solving least-squares problem by *either* the normal equations or by QR scale roughly as ~ mn² (dominated by the the cost of forming AᵀA for the normal equations in the former case, or by the cost of Gram–Schmidt or other algorithms for QR factorization in the latter case).  (In practice, the AᵀA normal-equations method is easier by hand, and is actually slightly faster on a computer too, but computers generally prefer the QR method for reasons discussed below.)
+
+Some practical tips to keep in mind if you ever need to do least-squares or orthogonal basis for real-world problems (not 18.06 exams!) involving data with finite precision:
+
+* Rarely (on a computer) explicitly form AᵀA or solve the normal equations: it turns out that this greatly exacerbates the sensitivity to numerical errors (in 18.335, you would learn that it squares the [condition number](https://en.wikipedia.org/wiki/Condition_number))  Instead, use the A=QR factorization and solve Rx̂=Qᵀb.  Better yet, just do `A \ b` (in Julia or Matlab) or the equivalent in other languages (e.g. [`numpy.linalg.lstsq`](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html)), which will use a good algorithm.   (Even professionals can [get confused about this](https://discourse.julialang.org/t/efficient-way-of-doing-linear-regression/31232/33?u=stevengj).)
+
+* Rarely use Gram–Schmidt for large matrices, which turns out to be notoriously sensitive to small errors if some vectors are nearly parallel.  People still compute the "same" QR factorization, just using different methods! There is an improved version called "modified Gram–Schmidt" described in the book (or you can also do Gram–Schmidt twice), but in practice computers mostly use a completely different algorithm called "Householder reflections."  You should just use the built-in `qr(A)` function in Julia (or similarly other languages), which will do the right thing most of the time.
+
+This is not unusual: there is often a difference between the way we conceptually *think* about linear algebra and the more sophisticated tricks that are required to make it *work well* on *large matrices* of real data.
+
+**Further reading:** Strang, section 4.4, and video [lecture 17](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-17-orthogonal-matrices-and-gram-schmidt/).   Many advanced linear-algebra texts talk about the practical aspects of roundoff errors in QR and least-squares, e.g. *Numerical Linear Algebra* by Trefethen and Bau (the 18.335 textbook), but this is beyond the scope of 18.06.   A nice historical review can be found in the article [Gram-Schmidt orthogonalization: 100 years and more](https://doi.org/10.1002/nla.1839).
+
+## Lecture 17 (Oct 21)
+
+* lecture video (see link above).
+* [SVD introduction](https://nbviewer.org/github/stevengj/1806/blob/master/notes/SVD-intro.ipynb)
+* [SVD low-rank approximation demos](https://computationalthinking.mit.edu/Spring21/structure/) from the spring 2021 *Computational Thinking* class
+* [pset 6 solutions](https://nbviewer.org/github/mitmath/1806/blob/master/psets/pset6sol.ipynb)
+* [pset 7](psets/pset7.ipynb): due Friday Oct 28.
+
+Guest lecture by Prof. Alan Edelman.
+
+Introduction to the [singular value decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition) (**SVD**), the fact that it gives the "right" orthonormal bases for the row and column spaces of a matrix, and its application to [low rank approximation](https://en.wikipedia.org/wiki/Low-rank_approximation).
+
+(Traditionally, the SVD is often left to near the end of an introductory linear algebra course.  One reason for this is that it takes a lot of linear-algebra machinery to *derive* the SVD, much less to calculate yourself.  In fact, it is almost completely impractical to compute by hand except for the nearly useless 2×2 case.   So at this point, **don't worry** about *why* the SVD exists, and trust Julia to calculate it for you.  The main goal for now is to understand what the SVD tells you once you have it.)
+
+**Further reading:** Beware that there are several slightly different forms of the SVD; what I've used in the notebook is called the "compact" SVD on Wikipedia and is denoted by an "r" subscript in Strang section 7.2; you can expand this to other forms by augmenting U and V with bases for the left and right nullspaces, respectively, and correspondingly adding rows and columns of zeros to Σ.   Strang, sections 7.1–7.2, and video [lecture 29](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-29-singular-value-decomposition/).  Note, however, that the connection of SVD to eigenvalues/eigenvectors of AᵀA is something that we won't cover until later in 18.06.   A cool example that uses the SVD to pull out a few key vectors from a big pile of data is the [eigenwalker demo](https://www.biomotionlab.ca/html5-bml-walker/).  The name for this technique in statistics is [principal component analysis (PCA)](https://en.wikipedia.org/wiki/Principal_component_analysis).  Strang section 4.2 on orthogonal projection.
+
+## Lecture 18 (Oct 24)
+
+* [Orthogonal polynomials](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Orthogonal-Polynomials.ipynb)
+* [Fourier sine series](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Sine-series.ipynb)
+
+Another wonderful and far-reaching application of these ideas is to realize that the same concepts of orthogonal bases and Gram–Schmidt can be applied to *any* vector space once we define a dot product (giving a so-called [Hilbert space](https://en.wikipedia.org/wiki/Hilbert_space), though we won't use that level of abstraction much in 18.06).  In particular, it turns out to be especially powerful to think about **orthogonal/orthonormal bases of functions**.  Introduced a dot product f⋅g=∫fg for functions defined on x∈[-1,1], and we'll use it to make an orthogonal basis of polynomials, the [Legendre polynomials](https://en.wikipedia.org/wiki/Legendre_polynomials).
+
+Showed another important example of orthogonal functions: Fourier series, and in particular the [Fourier sine series](https://en.wikipedia.org/wiki/Fourier_sine_and_cosine_series).
+
+**Further reading (polynomials):** For example, see these [TAMU notes on orthogonal polynomials](http://www.math.tamu.edu/~yvorobet/MATH304-503/Lect4-04web.pdf) and [these 18.06 notes on orthogonal polynomials](http://web.mit.edu/18.06/www/Spring09/legendre.pdf), or many other sources, e.g. [this book by Szego (1975)](https://people.math.osu.edu/nevai.1/SZEGO/szego=szego1975=ops=OCR.pdf).
+
+**Further reading (Fourier):** Strang, section 10.5 (Fourier series) and these [18.06 sine-series notes](http://web.mit.edu/18.06/www/Spring09/sines.pdf).  There is a [3blue1brown video](https://youtu.be/r6sGWTCMz2k) on Fourier series, along with many, many other resources and videos you can find online… Fourier series and their generalizations are vastly important for lots of applications as well as being a deep and beautiful mathematical subject for their own sake!
