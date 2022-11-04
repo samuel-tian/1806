@@ -446,3 +446,66 @@ Showed another important example of orthogonal functions: Fourier series, and in
 Discussed the relationship of mean, variance, and covariance/correlation to linear algebra, expressing them in terms of dot products and projections. Given an m×n matrix A whose columns are a bunch of different datasets, with the means subtracted, defined the covariance matrix S=AAᵀ/(m-1). The right singular vectors of A define a coordinate system of uncorrelated variables, with the squared singular values σ² being the variances in each uncorrelated direction. This is called [principal component analysis](https://en.wikipedia.org/wiki/Principal_component_analysis) in statistics, and allows us to identify the uncorrelated variables that are responsible for most of the variation (biggest σ²) in the data.
 
 **Further reading:** Strang book, sections 7.3, 12.1, 12.2. Googling "principal components analysis" or looking it up in any applied-statistics textbook will give you a lot more detail and examples.  The fossil example in the notebook is taken from [this AMS review article](https://mathvoices.ams.org/featurecolumn/2021/08/01/principal-component-analysis/).
+
+## Lecture 20 (Oct 28)
+
+* handwritten notes
+* [Determinants](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Determinants.ipynb)
+* [pset 7 solutions](https://nbviewer.org/github/mitmath/1806/blob/master/psets/pset7sol.ipynb)
+* [pset 8](psets/pset8.ipynb): due Friday Nov 4
+
+Introduced **determinants** and their properties.  Considering how central a role determinants play for the 2×2 and 3×3 matrices you probably encountered before 18.06, you may be surprised that we didn't get to determinants until now.  The fact of the matter is that determinants play a much less important role in applied linear algebra for larger matrices — with a few exceptions, most things that you would want to use determinants for can be done more effectively in other ways.  They are a useful *conceptual* tool, however, especially for thinking about eigenvalues.
+
+Following Strang, we will define determinants by starting with a few axioms we want them to obey, then working out many more properties and finally a way to compute them by elimination as ± the product of the pivots.  (In the end, there *is* also a "big formula" for determinants, but it's not very practically useful because it has [n factorial](https://en.wikipedia.org/wiki/Factorial) terms.)  Two of the least obvious properties are det(AB)=(det A)(det B) and det(Aᵀ)=det(A).
+
+**Further reading:** Strang, section 5.1; video [lecture 18](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-18-properties-of-determinants).  (We will mostly skip Strang, section 5.2 and 5.3, because the formulas in those sections are not so useful in practice except for tiny matrices.)  Wikipedia has a nice list of [lots of determinant properties](https://en.wikipedia.org/wiki/Determinant), more than we will cover in 18.06.
+
+## Lecture 21 ([Oct 31](https://youtu.be/ZVuToMilP0A))
+
+* handwritten notes and lecture video (see links above).
+
+Discussed briefy why |det A| is the volume of an m-dimensional parallelepiped whose edges are the columns of A, and det A is a signed volume: the volume obeys the same 3 axioms as the determinant.  This is why Jacobian factors |det J| arise from changes of variables in 18.02, because they relate the volumes of little hypercubes dxdydz in two coordinate systems.  **END OF EXAM-2 MATERIAL.**
+
+Started on our main topic for exam 3, **eigenvalues and eigenvectors**.  The goal, for an m×m matrix A, is to find a "magic" vector x≠0 such that Ax=λx: for this special "eigenvector", the **matrix acts just like a scalar** λ (the "eigenvalue").   For such a vector, all of linear algebra would become trivially easy, for example A³x=λ³x and A⁻¹x=x/λ.  It turns out that we can almost always find a *basis* of m eigenvectors, in which case the general procedure is:
+
+1. Find m linearly independent eigenvectors x₁,x₂,…,xₘ and corresponding eigenvalues λ₁,λ₂,…,λₘ.   (This is almost always possible; the rare "defective" exceptions will be dealt with much later in 18.06.)
+
+2. For an arbitrary vector y, expand it in the **basis** of these eigenvectors.
+
+3. Anything you want to do with the matrix A (e.g. Aⁿ, A⁻¹, eᴬ, …) becomes just a number (e.g. λⁿ, λ⁻¹, exp(λ), …) acting on an eigenvector.  Do this term-by-term on each eigenvector for the expansion of y in the eigenvector basis.
+
+The trick for (1) is to figure out **for which λ an eigenvector exists**, and the key is to realize that Ax=λx is equivalent to (A-λI)x=0: an **eigenvector is a nonzero vector in N(A-λI)**.  Such a nonzero nullspace vector only exists when A-λI is singular, or equivalently **det(A-λI)=0**.  This gives us a way (in principle) to find eigenvalues λ, and then to find the corresponding eigenvectors x: find the roots λₖ of the [characteristic polynomial](https://en.wikipedia.org/wiki/Characteristic_polynomial) det(A-λI), a degree-m polynomial, and then eigenvectors are a basis for each nullspace (A-λₖI).
+
+The characteristic polynomial det(A–λI)
+is a good way to *think* about eigenvalue problems: e.g. it tells you immediately
+to expect ≤ m eigenvalues, possibly complex, from an m×m matrix.  Almost always, we will have m distinct roots λₖ; the weird case of repeated roots is mostly something we'll avoid until later.
+But it is not
+really a good way to *compute* them in practice except for tiny (e.g. 2×2) matrices.   In fact, since there is [no quintic formula](https://en.wikipedia.org/wiki/Abel%E2%80%93Ruffini_theorem) for the roots of a degree-5 (or higher) polynomial, eigenvalue algorithms look fundamentally different from eigenvalues like Gaussian elimination or Gram—Schmidt: they are procedures that *approach* the eigenvalues λ (to any desired accuracy) but never exactly reach them, and efficient algorithms were only [discovered starting around 1960](https://www.atm.org.uk/write/MediaUploads/Resources/Mid_Plenary_FrancisGolub.pdf).  So, the emphasis in 18.06 is less about *calculating* eigenvalues/eigenvectors and more about *using* and *interpreting* them, and relating their properties to the structure of the matrix.
+
+ **Further reading (eigenvalues):** Strang, section 6.1; video [lecture 21](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-21-eigenvalues-and-eigenvectors/).   The Julia notebook [Eigenvalues and polynomials](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Eigenvalue-Polynomials.ipynb) also summarizes the same points as above, with more computed examples.
+
+## Lecture 22 (Nov 3)
+
+* [Recurrences and Fibonacci numbers](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Fibonacci.ipynb)
+* [Markov matrices](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Markov.ipynb)
+* pset 8 solutions: coming soon
+* pset 9: a short pset due **Wed** Nov 9.
+
+As an application of matrix powers, considered the famous [Fibonacci numbers](https://en.wikipedia.org/wiki/Fibonacci_number) 1,1,2,3,5,8,13,21,….  The n-th Fibonacci number fₙ satisfies the [linear recurrence relation](http://mathworld.wolfram.com/LinearRecurrenceEquation.html) fₙ=fₙ₋₁+fₙ₋₂, which we can express in terms of multiplication by a 2×2 matrix F that gives (fₙ,fₙ₋₁) from (fₙ₋₁,fₙ₋₂).  We found that the eigenvalues of F are (1±√5)/2.  The larger of these eigenvalues, (1+√5)/2≈1.618, is the so-called [golden ratio](https://en.wikipedia.org/wiki/Golden_ratio), and it means that the Fibonacci numbers blow up exponentially fast for large n.  Furthermore, we showed that the *ratio* fₙ/fₙ₋₁ of successive Fibonacci numbers goes to the golden ratio for large n.   Checked these facts numerically with a Julia notebook.
+
+As another example of matrix powers, considered [Markov matrices](https://en.wikipedia.org/wiki/Stochastic_matrix) (particularly positive Markov matrices), their eigenvalues, and the *steady state* solution.  These have lots of useful applications in statistics and other fields.
+
+**Further reading:** Strang, section 10.3 and video [lecture 24](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-24-markov-matrices-fourier-series/).   Another fun application of Markov matrices is to analyze simple games, as reviewed in my notebook on [Analyzing Chutes & Ladders](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Chutes-and-Ladders.ipynb).
+
+
+## Exam 2 (Nov `14): 11am in 26-100
+
+Exam 2 will cover the material through **lecture 21** and **pset 8**: it will include exam-1 material, but will focus mainly on **everything to do with orthogonality**.  Transposes and dot products, orthogonal subspaces/complements, projections, least-square solutions, orthogonal/orthonormal bases, Gram–Schmidt and QR factorization, orthogonal functions, and the SVD.   Matrix-calculus topics may also be included, as may determinants.
+
+(*Not* covered: eigenvalue problems and subsequent material.)
+
+The exam is **closed book/notes**. (No calculators or computers either.)
+
+* (Optional) **review session**: Thursday 5/6 4–5pm [via Zoom](https://mit.zoom.us/j/98031703967?pwd=THIxRnRLODNGU0pJYTlMdEE0T2VZQT09).  A recording, notes, and a list of practice problems will be posted.
+
+**Practice problems:** Coming soon.
