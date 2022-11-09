@@ -484,28 +484,60 @@ really a good way to *compute* them in practice except for tiny (e.g. 2×2) matr
 
  **Further reading (eigenvalues):** Strang, section 6.1; video [lecture 21](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-21-eigenvalues-and-eigenvectors/).   The Julia notebook [Eigenvalues and polynomials](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Eigenvalue-Polynomials.ipynb) also summarizes the same points as above, with more computed examples.
 
-## Lecture 22 (Nov 3)
+## Lecture 22 (Nov 2)
 
+* handwritten notes and lecture video (see links above).
+
+Eigenproblem properties and examples.
+
+Went through a 2×2 example, showed how to compute matrix powers Aⁿ on an arbitrary vector by expanding in the basis of eigenvectors — for large powers n, Aⁿx will asymptotically be parallel to an *eigenvector for the largest |λ|* (unless that basis coefficient happens to be *exactly* zero).
+
+More generally, given eigenvalues λ₁,λ₂,…,λₘ and eigenvectors x₁,x₂,…,xₘ of an m×m matrix A, we *immediately* know eigensolutions for:
+
+* powers Aⁿ: same eigenvectors x₁,x₂,…,xₘ, new eigenvalues λ₁ⁿ,λ₂ⁿ,…,λₘⁿ
+* shifts A+μI (any scalar μ): same eigenvectors x₁,x₂,…,xₘ, shifted eigenvalues λ₁+μ,λ₂+μ,…,λₘ+μ
+* scaling μA (any scalar μ): same eigenvectors x₁,x₂,…,xₘ, scaled eigenvalues μλ₁,μλ₂,…,μλₘ
+* transposes Aᵀ: *same* eigenvalues λ₁,λ₂,…,λₘ, but in general *different* eigenvectors y₁,y₂,…,yₘ called the "left" eigenvectors of A (since yₖᵀA = λₖyₖᵀ).    This is closely analogous to N(A) and N(Aᵀ): for square A, these have the same dimension, but different vectors; in fact, nonzero vectors in a nullspace are just eigenvectors with λ=0!
+
+Even for real matrices, we may in general have **complex** eigenvalues (and eigenvectors), because real-coefficient polynomials can have complex roots.  Went through a 2×2 example with complex eigenvalues.   *If* the matrix is real, however, the complex eigenvalues/eigenvectors (if any) must come in **complex-conjugate pairs**.
+
+## Lecture 23 (Nov 4)
+
+* handwritten notes and lecture video (see links above).
 * [Recurrences and Fibonacci numbers](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Fibonacci.ipynb)
 * [Markov matrices](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Markov.ipynb)
-* pset 8 solutions: coming soon
-* pset 9: a short pset due **Wed** Nov 9.
+* [pset 8 solutions](psets/pset8sol.ipynb)
+* [pset 9](psets/pset9.ipynb): a short pset due **Wed** Nov 9.
 
 As an application of matrix powers, considered the famous [Fibonacci numbers](https://en.wikipedia.org/wiki/Fibonacci_number) 1,1,2,3,5,8,13,21,….  The n-th Fibonacci number fₙ satisfies the [linear recurrence relation](http://mathworld.wolfram.com/LinearRecurrenceEquation.html) fₙ=fₙ₋₁+fₙ₋₂, which we can express in terms of multiplication by a 2×2 matrix F that gives (fₙ,fₙ₋₁) from (fₙ₋₁,fₙ₋₂).  We found that the eigenvalues of F are (1±√5)/2.  The larger of these eigenvalues, (1+√5)/2≈1.618, is the so-called [golden ratio](https://en.wikipedia.org/wiki/Golden_ratio), and it means that the Fibonacci numbers blow up exponentially fast for large n.  Furthermore, we showed that the *ratio* fₙ/fₙ₋₁ of successive Fibonacci numbers goes to the golden ratio for large n.   Checked these facts numerically with a Julia notebook.
 
 As another example of matrix powers, considered [Markov matrices](https://en.wikipedia.org/wiki/Stochastic_matrix) (particularly positive Markov matrices), their eigenvalues, and the *steady state* solution.  These have lots of useful applications in statistics and other fields.
+
+## Lecture 24 (Nov 7)
+
+* handwritten notes and lecture video (see links above).
+* [Markov matrices](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Markov.ipynb)
+
+Went over Markov matrices A (nonnegative entries ≥ 0 and columns that sum to 1).  Showed:
+
+* A Markov matrix always has an eigenvalue λ₀=1 and a corresponding "steady state" eigenvector Ax₀=x₀.   This follows immediately by writing the column-sum property of A as oᵀA=oᵀ where o ∈ ℝᵐ is the vector of m 1's: this means that Aᵀo=o, i.e. Aᵀ has an eigenvalue λ=1, and A and Aᵀ have the same eigenvalues.
+* *All* eigenvalues of a Markov matrix have magnitude |λ|≤1.    Showed this by the fact that Markov processes "conserve sums": sum(x)=oᵀx=(oᵀA)x=oᵀ(Ax)=sum(Ax); combined with the nonnegative property, this means that Aⁿx can't blow up, so we can't have a |λ|>1.
+
+The above two properties are *not* enough to guarantee that a "Markov process" Aⁿx converges to a steady state — there might be more than one steady state direction (multiple independent eigenvectors for λ=1) or there might be anοther eigenvalue with |λ|=1 but λ≠1, which will give oscillatory behavior.    In order to have convergence to a steady state, we must have all *other* eigenvalues |λ|<1 (not just ≤1), which it turns out is guaranteed if A is a "positive" Markov matrix (all entries > 0, not just ≥ 0).  (For Markov matrices with zero entries, we might need to check numerically whether they have multiple |λ|=1 eigenvalues.)
+
+The Google [PageRank](https://en.wikipedia.org/wiki/PageRank) algorithm is a nice application of Markov matrices and leads us into a discussion of iterative linear-algebra methods for huge matrices, starting with the power method. In particular, the pagerank is essentially an enormous Markov eigenproblem (# web pages by # web pages, whose entries indicate links), too big to even store, but it is *mostly zero* (each web page only links to a few other pages).  Hence, you can multiply by it much more quickly, and because of that the power method (and related methods) can be used to approximately find the steady state.
 
 **Further reading:** Strang, section 10.3 and video [lecture 24](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-24-markov-matrices-fourier-series/).   Another fun application of Markov matrices is to analyze simple games, as reviewed in my notebook on [Analyzing Chutes & Ladders](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Chutes-and-Ladders.ipynb).
 
 
 ## Exam 2 (Nov `14): 11am in 26-100
 
-Exam 2 will cover the material through **lecture 21** and **pset 8**: it will include exam-1 material, but will focus mainly on **everything to do with orthogonality**.  Transposes and dot products, orthogonal subspaces/complements, projections, least-square solutions, orthogonal/orthonormal bases, Gram–Schmidt and QR factorization, orthogonal functions, and the SVD.   Matrix-calculus topics may also be included, as may determinants.
+Exam 2 will cover the material through **lecture 21** and **pset 8**: it will include exam-1 material, but will focus mainly on **everything to do with orthogonality**.  Transposes and dot products, orthogonal subspaces/complements, projections, least-square solutions, orthogonal/orthonormal bases, Gram–Schmidt and QR factorization, orthogonal functions, and the SVD.   Matrix-calculus topics may also be included, as may determinants.  (Note that we only covered properties of determinants, but not "cofactor formulas", so ignore cofactor-related materials on previous exams!)
 
 (*Not* covered: eigenvalue problems and subsequent material.)
 
 The exam is **closed book/notes**. (No calculators or computers either.)
 
-* (Optional) **review session**: Thursday 5/6 4–5pm [via Zoom](https://mit.zoom.us/j/98031703967?pwd=THIxRnRLODNGU0pJYTlMdEE0T2VZQT09).  A recording, notes, and a list of practice problems will be posted.
+* (Optional) **review session**: Thursday 11/10 4–5pm [via Zoom](https://mit.zoom.us/j/98031703967?pwd=THIxRnRLODNGU0pJYTlMdEE0T2VZQT09).  A recording, notes, and a list of practice problems will be posted.
 
-**Practice problems:** Coming soon.
+**Practice problems:** [spring 2009 practice exam 2](http://web.mit.edu/18.06/www/Spring09/practice-quiz2-S09.pdf) problems 1–17; [spring 2009 exam 2](http://web.mit.edu/18.06/www/Spring09/quiz2-s09.pdf) ([solutions](http://web.mit.edu/18.06/www/Spring09/quiz2-s09-soln.pdf)) problem 1–3; [spring 2017 exam 2](http://web.mit.edu/18.06/www/Spring17/exam2.pdf)  ([solutions](http://web.mit.edu/18.06/www/Spring17/exam2-sol.pdf)) problems 1(b,c), 2, 3; [fall 2014 exam 2](http://web.mit.edu/18.06/www/Fall14/midterm2_F14.pdf) ([solutions](http://web.mit.edu/18.06/www/Fall14/Midterm2solF14.pdf)) problem 1, 2a, 2e, 3a; [spring 2014 exam 2](http://web.mit.edu/18.06/www/Spring14/quiz_2_draft.pdf) ([solutions](http://web.mit.edu/18.06/www/Spring14/StrangExamAprilSolutions.pdf)) problems 1,2,4; [spring 2013 exam 2](http://web.mit.edu/18.06/www/Spring13/Exam2blank.pdf) ([solutions](http://web.mit.edu/18.06/www/Spring13/Exam2.pdf)) problems 1, 2, 3; [fall 2012 exam 2](http://web.mit.edu/18.06/www/Fall12/Exam%202/quiz2-1806-f12.pdf) ([solutions](http://web.mit.edu/18.06/www/Fall12/Exam%202/quiz2-1806-f12-sol.pdf)) problems 1,3; [spring 2019 exam 2](https://github.com/mitmath/1806/blob/spring20/psets/quiz2-1806-S19.pdf) ([solutions](https://github.com/mitmath/1806/blob/spring20/psets/quiz2-1806-S19_solns.pdf)) problems 1 (SVD), 2, 5 (calculus); [spring 2019 exam 2 practice](https://github.com/mitmath/1806/blob/spring20/psets/Exam%202%20Practice%20.ipynb) ([solutions](https://github.com/mitmath/1806/blob/spring20/psets/midterm_2_practice_problems_solns.ipynb)) problems 4 & 5 (calc), 6 (det), 9 & 10 & 12 & 13 (SVD);
