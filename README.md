@@ -530,6 +530,26 @@ The Google [PageRank](https://en.wikipedia.org/wiki/PageRank) algorithm is a nic
 **Further reading:** Strang, section 10.3 and video [lecture 24](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-24-markov-matrices-fourier-series/).   Another fun application of Markov matrices is to analyze simple games, as reviewed in my notebook on [Analyzing Chutes & Ladders](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Chutes-and-Ladders.ipynb).
 
 
+## Lecture 24 (Nov 7)
+
+* handwritten notes and lecture video (see links above).
+* [pset 9 solutions](psets/pset9sol.ipynb)
+* [pset 10](psets/pset10.ipynb): short pset due Friday Nov 18
+
+Covered **diagonalization** of a matrix: the process of expanding a vector in the basis of eigenvectors, then multiplying each one by λ, then adding up the eigenvectors with the new coefficients, can be thought of as the matrix factorization A=XΛX⁻¹, where X is the matrix whose columns are the eigenvectors.   This only works if X is invertible: i.e. when for an m×m matrix A we have m eigenvalues (possibly repeated) and m independent eigenvectors (a *basis* of eigenvectors).  Such a matrix is called **diagonalizable**.
+
+It turns out that **almost all matrices in practice are diagonalizable**, so for the most part we will only deal with diagonalizable matrices in 18.06.  The exceedingly rare exceptions are called **defective** matrices (and can only occur when there are *repeated roots* in the characteristic polynomial); we will talk about such defective (non-diagonalizable) cases much later.
+
+Defined [similar matrices](https://en.wikipedia.org/wiki/Matrix_similarity) B=M⁻¹AM, and showed that similar matrices have the same *eigenvalues* (with eigenvectors related by a factor of M), the same *determinant*, the same *characteristic polynomial*, and the same *trace*.  Defined the [trace](https://en.wikipedia.org/wiki/Trace_(linear_algebra)) of a matrix tr(A),
+and showed tr(AB)=tr(BA) for any m×n matrix A and n×m matrix B.  (We saw in lecture 12 that similar matrices essentially
+represent the *same linear operation in a different coordinate system.*)  In hindsight, we
+now see that a diagonalizable matrix A is *similar to a diagonal matrix Λ*.  Hence, we
+see that det(A) is the *product* of the eigenvalues and tr(A) is the *sum* of the eigenvalues.
+
+For a 2×2 matrix, it follows that det(A-λI)=λ²-λtr(A)+det(A), which is a useful formula when solving 2×2 eigenproblems.
+
+**Further reading:** Strang, section 6.2; video [lecture 22](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-22-diagonalization-and-powers-of-a/) and video [lecture 28](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-28-similar-matrices-and-jordan-form/).  See also this [Diagonalization](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Diagonalization.ipynb) notebook for Julia.
+
 ## Exam 2 (Nov `14): 11am in 26-100
 
 Exam 2 will cover the material through **lecture 21** and **pset 8**: it will include exam-1 material, but will focus mainly on **everything to do with orthogonality**.  Transposes and dot products, orthogonal subspaces/complements, projections, least-square solutions, orthogonal/orthonormal bases, Gram–Schmidt and QR factorization, orthogonal functions, and the SVD.   Matrix-calculus topics may also be included, as may determinants.  (Note that we only covered properties of determinants, but not "cofactor formulas", so ignore cofactor-related materials on previous exams!)
@@ -538,6 +558,6 @@ Exam 2 will cover the material through **lecture 21** and **pset 8**: it will in
 
 The exam is **closed book/notes**. (No calculators or computers either.)
 
-* (Optional) **review session**: Thursday 11/10 4–5pm [via Zoom](https://mit.zoom.us/j/98031703967?pwd=THIxRnRLODNGU0pJYTlMdEE0T2VZQT09).  A recording, notes, and a list of practice problems will be posted.
+* (Optional) **review session**: Thursday 11/10 4–5pm [via Zoom](https://mit.zoom.us/j/98031703967?pwd=THIxRnRLODNGU0pJYTlMdEE0T2VZQT09): see [video recording](https://mit.zoom.us/rec/share/HgwZS9Z0hn0wS_EU4D9TN80jtfh3QORNOnA0a2ZIpz5vD4FbMC8o5ymfHFXJaQF1.6Wv4HP-vMQtyrOHX?startTime=1668113824000), [handwritten notes](https://www.dropbox.com/s/xnowl6zoe1js1t8/18.06%20Fall%2022%20Exam%20Reviews.pdf?dl=0), and practice problems: [spring 2017 exam 2](https://github.com/mitmath/1806/blob/spring22/exams/exam2.pdf) ([solutions](https://github.com/mitmath/1806/blob/spring22/exams/exam2sol.pdf)) problems 1–3, spring 2017 exam 2 (below) problem 1, spring 2019 exam 2 practice (below) problems 12–13 (replacing the "compact" SVD, which we didn't cover, with "thin" SVD as covered this term … though they are the same thing if A isn't rank-deficient).
 
 **Practice problems:** [spring 2009 practice exam 2](http://web.mit.edu/18.06/www/Spring09/practice-quiz2-S09.pdf) problems 1–17; [spring 2009 exam 2](http://web.mit.edu/18.06/www/Spring09/quiz2-s09.pdf) ([solutions](http://web.mit.edu/18.06/www/Spring09/quiz2-s09-soln.pdf)) problem 1–3; [spring 2017 exam 2](http://web.mit.edu/18.06/www/Spring17/exam2.pdf)  ([solutions](http://web.mit.edu/18.06/www/Spring17/exam2-sol.pdf)) problems 1(b,c), 2, 3; [fall 2014 exam 2](http://web.mit.edu/18.06/www/Fall14/midterm2_F14.pdf) ([solutions](http://web.mit.edu/18.06/www/Fall14/Midterm2solF14.pdf)) problem 1, 2a, 2e, 3a; [spring 2014 exam 2](http://web.mit.edu/18.06/www/Spring14/quiz_2_draft.pdf) ([solutions](http://web.mit.edu/18.06/www/Spring14/StrangExamAprilSolutions.pdf)) problems 1,2,4; [spring 2013 exam 2](http://web.mit.edu/18.06/www/Spring13/Exam2blank.pdf) ([solutions](http://web.mit.edu/18.06/www/Spring13/Exam2.pdf)) problems 1, 2, 3; [fall 2012 exam 2](http://web.mit.edu/18.06/www/Fall12/Exam%202/quiz2-1806-f12.pdf) ([solutions](http://web.mit.edu/18.06/www/Fall12/Exam%202/quiz2-1806-f12-sol.pdf)) problems 1,3; [spring 2019 exam 2](https://github.com/mitmath/1806/blob/spring20/psets/quiz2-1806-S19.pdf) ([solutions](https://github.com/mitmath/1806/blob/spring20/psets/quiz2-1806-S19_solns.pdf)) problems 1 (SVD), 2, 5 (calculus); [spring 2019 exam 2 practice](https://github.com/mitmath/1806/blob/spring20/psets/Exam%202%20Practice%20.ipynb) ([solutions](https://github.com/mitmath/1806/blob/spring20/psets/midterm_2_practice_problems_solns.ipynb)) problems 4 & 5 (calc), 6 (det), 9 & 10 & 12 & 13 (SVD);
