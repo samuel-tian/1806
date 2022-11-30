@@ -550,7 +550,7 @@ For a 2×2 matrix, it follows that det(A-λI)=λ²-λtr(A)+det(A), which is a us
 
 **Further reading:** Strang, section 6.2; video [lecture 22](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-22-diagonalization-and-powers-of-a/) and video [lecture 28](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-28-similar-matrices-and-jordan-form/).  See also this [Diagonalization](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Diagonalization.ipynb) notebook for Julia.
 
-## Exam 2 (Nov `14): 11am in 26-100
+## Exam 2 (Nov 14): 11am in 26-100
 
 Exam 2 will cover the material through **lecture 21** and **pset 8**: it will include exam-1 material, but will focus mainly on **everything to do with orthogonality**.  Transposes and dot products, orthogonal subspaces/complements, projections, least-square solutions, orthogonal/orthonormal bases, Gram–Schmidt and QR factorization, orthogonal functions, and the SVD.   Matrix-calculus topics may also be included, as may determinants.  (Note that we only covered properties of determinants, but not "cofactor formulas", so ignore cofactor-related materials on previous exams!)
 
@@ -591,3 +591,155 @@ if one eigenvalue is *zero*).
 Matrix operation eᴬᵗ, the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential).)
 
 **Further reading:** Strang, section 6.3 and video [lecture 23](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-23-differential-equations-and-exp-at/).
+
+## Lecture 28 (Nov 21)
+
+Continued discussion of ODEs from last lecture, discussing the over/underdamped case and the example of multiple coupled masses and springs.
+
+Next, reformulated the solution of dx/dt=Ax in terms of the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential) eᴬᵗ, and discussed the definition and properties of this fascinating and important matrix operation.
+
+**Further reading:** Strang, section 6.3 and video [lecture 23](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-23-differential-equations-and-exp-at/).  [Notebook on Matrix exponentials eᴬ](https://nbviewer.org/github/mitmath/1806/blob/master/notes/Matrix-Exponentials.ipynb).
+
+## Lecture 29 (Nov 23)
+
+* [pset 11 solutions](pset11sol.ipynb)
+* [pset 12](psets/pset12.ipynb) due Friday Dec. 2
+
+Continued discussion of matrix exponentials.  Unlike scalars, exp(A+B)≠exp(A)exp(B) **unless** A and B **commute** (AB=BA).  An important example of commuting matrices is when B is a *scalar multiple* of A, from which we see that **exp(A(t₁+t₂))=exp(At₁)exp(At₂)**: evolving a solution of dx/dt=Ax for time t₁+t₂ is the same as evolving it for t₂ then t₁ (or vice versa).   We also see that **exp(A)⁻¹=exp(-A)**, since of course A and -A commute.
+
+### Complex matrices, vectors, and dot products: the adjoint H
+
+To go further, we need
+to generalize our notion of a "dot product" to complex vectors.  The "transpose"
+is actually not the right notion here.  Instead, we define:
+
+* xᴴ and Aᴴ are the **conjugate-transpose** of a vector or matrix (that is, you transpose and then take the complex conjugate of every element).  This is also called the ("Hermitian") [adjoint](https://en.wikipedia.org/wiki/Conjugate_transpose) operation.  *For a real matrix, the adjoint is the same as the transpose.*
+
+For complex vectors, the dot product x⋅y is xᴴy, *not* xᵀy.   And the length
+of a vector ‖x‖² = x⋅x = xᴴx.  Defined this way, it has the key property:
+
+* ‖x‖² = x⋅x = ∑ᵢ|xᵢ|² ≥ 0, and = 0 only for x=0.
+
+If you look back at 18.06 and you change our real vectors to complex vectors, just
+change every transpose to an adjoint.  This includes for Gram-Schmidt and orthonormal
+bases!   And if you look back at 18.06 and change real matrices to complex matrices,
+again the right thing is to *change every transpose (T) to adjoint (H)*:
+
+* The normal equations for minimizing ‖Ax-b‖ are AᴴAx̂=Aᴴb.
+* If the columns of Q are orthonormal, then QᴴQ = I.
+* The projection matrix onto C(A) is A(AᴴA)⁻¹Aᴴ
+* The left nullspace is N(Aᴴ) ⟂ C(A), and N(A) ⟂ C(Aᴴ).
+* A square matrix Q with orthonormal columns (Q⁻¹=Qᴴ) is called **unitary**.  (The term "orthogonal" is only used in the real-A case.)
+* If A=Aᴴ, the matrix is called **Hermitian** (not "symmetric", except in the real-A case).
+
+Again, for real matrices/vectors, the adjoint = the transpose, so everything
+we've done before is just a special case of the complex case with zero imaginary parts.
+
+**Further reading:** Strang, section 9.2;  [lecture 26](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-26-complex-matrices-fast-fourier-transform/).
+
+## Lecture 30 (Nov 28)
+
+### Hermitian and real-symmetric matrices
+
+Now, for a Hermitian matrix A=Aᴴ (= real-symmetric if A is real) we have:
+
+* All the eigenvalues λ are **real**.  (The eigenvectors are *not* generally real unless A is real.)_
+* The matrix is always **diagonalizable** (no funny defective case).
+* Eigenvectors for different λ are **orthogonal** (and hence eigenvectors can be chosen to be **an orthonormal basis**).
+
+I didn't prove diagonalizability.  (There are various proofs you can easily find online.  See e.g. [this video](https://www.youtube.com/watch?v=_2gGqEGA_IY) if you are curious, but
+they seem slightly too tricky for 18.06.)
+
+Since a **Hermitian matrix has an orthonormal basis of eigenvectors**, we
+can call the eigenvectors q₁,q₂,⋯, and put them as the columns of a
+**unitary** matrix Q (= orthogonal if A is real).  (Formerly, we called this X.)
+We can write:
+
+* A = QΛQᴴ = ∑ₖ λₖqₖqₖᴴ
+
+Equivalently, to **expand an arbitrary vector x** in the eigenvector basis,
+we **just need to take dot products**.   Formerly, to write x=∑ₖcₖxₖ, to find
+the coefficients c we had to solve Xx=x, or c=X⁻¹x.   Now, to write x=∑ₖcₖqₖ,
+the coefficients are just **cₖ=qₖᴴx**, or x=∑ₖqₖ(qₖᴴx).  *Expressing a vector
+in an orthonormal basis is easy.*
+
+### Positive-definite/semidefinite matrices
+
+A lot of Hermitian matrices in practice come in the form BᴴB (or BᵀB for real B)
+for some matrix B.  e.g. we have seen several of these already, e.g. in least-squares problems.   Such matrices are not only Hermitian, but they
+are **positive-definite**.
+
+In particular, a positive-definite matrix A is a Hermitian matrix A=Aᴴ that
+*additionally* has the following *equivalent* properties:
+
+* All eigenvalues λ of A are > 0.
+* xᴴAx > 0 for *any* vector x≠0.
+* A = BᴴB for some full-column-rank matrix B
+* All the pivots are > 0 in Gaussian elimination of A.
+
+These are all *equivalent*: any one of these properties implies *all* of
+the other properties for a Hermitian A.   I proved a couple of the equivalencies,
+but not all; some more equivalencies are proved in the textbook.
+
+A positive **semidefinite** matrix is almost the same, except you replace
+"> 0" with "≥ 0", and A = BᴴB is positive semidefinite for *any* B (not necessarily full rank).  (The pivots are > 0, but A may be singular.)
+
+(There are also "negative definite" and "negative semidefinite" matrices, which
+are the same things except with the opposites signs, i.e. "< 0" or "≤ 0" above.)
+
+We can also easily see (e.g. via the xᴴAx > 0 property) that the *sum* of positive-definite matrices is also positive definite.
+
+### Connection to SVD
+
+We are now (*finally*) in a position to start to see a connection between eigenproblems and the SVD, and to see one possible route to deriving *why* the SVD exists.
+
+A "tall" m×n matrix A=UΣVᴴ doesn't *have* eigenvalues if m>n, but the n×n matrix AᴴA=QΛQᴴ is Hermitian semidefinite with eigenvalues λ≥0 and orthonormal eigenvectors Q.   Plugging in the SVD, however, we see that AᴴA simplifies to VΣ²Vᴴ, which means that the **singular values σ** are the **square roots of the positive λ's of AᴴA**, and the **right singular vectors V** are corresponding orthonormal **eigenvectors** of AᴴA.
+
+In fact, it is possible to go backwards and *derive* the SVD in this fashion, obtaining the v's as eigenvectors of AᴴA, the u's as eigenvectors of AAᴴ, and the σ's as the square roots of the positive λ's.
+
+**Further reading:** Strang, section 6.4;  [lecture 25](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-25-symmetric-matrices-and-positive-definiteness/).     **SVD**: Strang, sections 7.1–7.2, and video [lecture 29](https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/video-lectures/lecture-29-singular-value-decomposition/).  Notes on the [SVD as an eigenproblem](https://github.com/mitmath/1806/blob/master/notes/SVD-eigenproblem.ipynb).
+
+## Lecture 31 (Nov 30)
+
+As an application of real-symmetric and positive-definite matrices, I returned
+to the system of masses and springs from our first ODE lectures, but this time I considered
+n masses m and n+1 springs kᵢ.   I showed that Newton's laws take the form:
+
+* mẍ = -DᵀKDx ⟹ ẍ = -Ax, where D is "difference" and K is a diagonal matrix of spring constants, so that A=Dᵀ(K/m)D.
+
+A is obviously real-symmetric, so its eigenvalues λ are real.  With a little more work, we saw that it must be positive-definite.  For example, A=-BᵀB for B = √(K/m)D, with √(K/m) being the diagonal matrix with √(kᵢ/m) on the diagonal, so A must be negative semidefinite.
+
+A little more consideration of this matrix shows that A must be negative *definite*: it cannot have λ=0 eigenvalues, i.e. N(A)=N(B)=N(D)={0}.  Since Dᵀ is upper triangular, by inspection it has rank n (n pivots), and hence D has full column rank and N(D)={0}=N(A).
+
+The fact that A is negative definite allowed us to derive that *any* such system of masses and springs has *orthogonal oscillating solutions* called the [normal modes](https://en.wikipedia.org/wiki/Normal_mode). In particular, given the eigenvectors vⱼ (orthogonal since A is real-symmetric!), satisfying Aqⱼ=λⱼqⱼ with λⱼ<0, we expanded the solution x(t)=∑ⱼcⱼ(t)qⱼ in the basis of these eigenvectors qⱼ.  For each eigenvector component, the matrix A acts just like a negative number λⱼ=-ωⱼ², allowing us to easily solve the equation c̈ⱼ=-ωⱼ²cⱼ to get sines and cosines, and hence to get the general solution:
+
+* x(t) = ∑ⱼ [αⱼ cos(ωⱼt) + βⱼ sin(ωⱼt)] qⱼ
+
+where ωⱼ=√-λⱼ, and αⱼ and βⱼ are determined from the initial conditions x(0) and ẋ(0).
+
+The key point is that the **structure** of the problem told us that λⱼ<0 and
+hence that the **frequencies** ωⱼ are **real** numbers.  (If they were complex, we would have exponentially growing or decaying solutions, which would make no physical sense for a system of lossless springs and masses.)  The moral of this story is that real-symmetric and definite matrices don't just fall down out of the sky, they arise from how the matrix was constructed, and that these matrix properties are often the key to understanding the physical properties of real problems.
+
+**Further reading:** Strang, section 10.2.  See also [these notes on the springs-and-masses problem](https://github.com/mitmath/18303/blob/fall15/lecture-5.5.pdf) from [18.303](https://github.com/mitmath/18303/tree/fall15) (you can ignore the last two pages, which go beyond 18.06, and ignore the Δx factor which is used in 18.303 to connect the discrete problem to a continuous problem).
+
+## Lecture 32 (Dec 2)
+
+* [Notes on "Jordan" vectors](notes/jordan-vectors.pdf)
+* pset 12 solutions: to be posted
+* pset 13: coming soon, short pset due **Wed Dec 7**
+
+Most matrices are diagonalizable.  (*Any* n×n matrix with n distinct eigenvalues is diagonalizable, as is *any* Hermitian A=Aᴴ, unitary A⁻¹=Aᴴ, or anti-Hermitian A=-Aᴴ matrix.)  Non-diagonalizable matrices in practical situations typically arise only by design: you start with a "non-normal" matrix and play with the entries until you *force* two eigenvalues and eigenvectors to coincide.  This does not mean that such "exceptional" or "defective" cases are not interesting, however!   Even more commonly, on encounters a matrix that is *nearly* defective (i.e. the matrix X of eigenvectors is *nearly singular*).
+
+To understand what happens with defective matrices, I introduce "Jordan" vectors (also called [generalized eigenvectors](https://en.wikipedia.org/wiki/Generalized_eigenvector)) and Jordan chains.  I don't focus on formal proofs of the *existence* of these chains and the theoretical construct of the "Jordan form" of a matrix.  Instead, I want to explore their *consequences* for the Aⁿx and dx/dt=Ax types of problems that we have spent a lot of time on.  We show that, for a defective A, Aⁿx gives an extra term that grows as n×λⁿ, not just λⁿ!  And dx/dt=Ax gives an extra term that grows as t×exp(λt), not just exp(λt).
+
+**Further reading**: Strang book, section 8.3.  Going far beyond 18.06, there is a wonderful book, *Spectra and Pseudospectra* by Trefethen and Embree, entirely devoted to cases where diagonalization fails (or nearly fails).
+
+## Exam 3 (Dec 9): 11am in 26-100
+
+Exam 3 will cover the material through **lecture 32** and **pset 13**: it will include exam-1 and exam-2 material, but will focus mainly on **everything to do with eigenproblems**.  Possible topics include: Determinant, trace, eigenvalues/eigenvectors, diagonalization, similar matrices, matrix powers and linear recurrences xₙ=Aⁿx₀, linear ODEs dx/dt=Ax (and d²x/dt²=Ax), matrix exponentials (and other matrix functions), complex matrices and the adjoint Aᴴ, real-symmetric/Hermitian matrices, positive-definite matrices (and semi-definite, negative-definite, etc), connections to SVD, defective matrices and generalized eigenvectors.
+
+The exam is **closed book/notes**. (No calculators or computers either.)
+
+* (Optional) **review session**: Wednesday 12/7 4–5pm [via Zoom](https://mit.zoom.us/j/96564626053?pwd=VU1IY28wQ1BLRitDYmdtUG9LTWU4QT09): video recording, notes, and practice problems to be posted.
+
+* Some practice problems: to be posted Dec 2
